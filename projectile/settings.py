@@ -21,10 +21,10 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-MEDIA_DIR=os.path.realpath(os.path.join(BASE_DIR,"media"))
+MEDIA_DIR = os.path.realpath(os.path.join(BASE_DIR, "media"))
 
-MEDIA_ROOT=MEDIA_DIR
-MEDIA_URL="/media/"
+MEDIA_ROOT = MEDIA_DIR
+MEDIA_URL = "/media/"
 
 
 # Quick-start development settings - unsuitable for production
@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    #project apps
+    # project apps
     "rest_framework",
     "core.apps.CoreConfig",
     "accountio.apps.AccountioConfig",
@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
 ]
 
-AUTH_USER_MODEL ="core.User"
+AUTH_USER_MODEL = "core.User"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -118,15 +118,23 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-REST_FRAMEWORK={"DEFAULT_SCHEMA_CLASS":"drf_spectacular.openapi.AutoSchema",
-                "DEFAULT_PERMISSION_CLASSES": [
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",
     ],
-    "DEFAULT_AUTHENTICATION_CLASSES":(
+    "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-        "rest_framework.authentication.SessionAuthentication"
-        ),
-    }
+        "rest_framework.authentication.SessionAuthentication",
+    ),
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 40,
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "3000/minute",
+        "user": "1200/minute",
+        "chat_gpt_user": "4/minute",
+    },
+}
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),  # Token expires in 60 minutes
@@ -136,9 +144,9 @@ SIMPLE_JWT = {
     "UPDATE_LAST_LOGIN": True,
     "ALGORITHM": "HS256",
     "SIGNING_KEY": SECRET_KEY,
-    }
+}
 
-APPEND_SLASH =False
+APPEND_SLASH = False
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
