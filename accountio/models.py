@@ -13,7 +13,9 @@ User = get_user_model()
 
 class Vendor(BaseModel):
     name = models.CharField(max_length=100)
-    slug = AutoSlugField(populate_from="name", unique=True)
+    slug = AutoSlugField(
+        populate_from="name", unique=True, editable=False, db_index=True
+    )
     logo = models.ImageField(blank=True, null=True)
     image = models.ImageField(blank=True, null=True)
     is_active = models.BooleanField(default=True)

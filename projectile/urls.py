@@ -30,6 +30,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/v1/auth", include("accountio.rest.urls.auth")),
     path("api/v1/onboarding", include("accountio.rest.urls.onboarding")),
+    path("api/v1/products", include("productio.rest.urls")),
     path("api/schema", SpectacularAPIView.as_view(), name="schema"),
     path(
         "api/docs", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"

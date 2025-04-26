@@ -42,18 +42,21 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # Django aps
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # project apps
+    # Third party apps
     "rest_framework",
-    "core.apps.CoreConfig",
-    "accountio.apps.AccountioConfig",
     "drf_spectacular",
     "rest_framework_simplejwt",
+    # Projects apps
+    "core.apps.CoreConfig",
+    "accountio.apps.AccountioConfig",
+    "productio.apps.ProductioConfig",
 ]
 
 AUTH_USER_MODEL = "core.User"
