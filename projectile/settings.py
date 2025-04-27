@@ -36,10 +36,7 @@ SECRET_KEY = "django-insecure-xxnb_1v595l%0o2mpivdeyz0ij%vc1$z=m4ydy#682s-451_pf
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
-
-# Application definition
+ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     # Django aps
@@ -57,6 +54,7 @@ INSTALLED_APPS = [
     "core.apps.CoreConfig",
     "accountio.apps.AccountioConfig",
     "productio.apps.ProductioConfig",
+    "orderio.apps.OrderioConfig",
 ]
 
 AUTH_USER_MODEL = "core.User"
