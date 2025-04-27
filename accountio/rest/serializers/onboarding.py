@@ -43,7 +43,7 @@ class PublicVendorMiniSerializer(serializers.ModelSerializer):
             "website_url",
             "address",
         ]
-        read_only_fields = ["uid", "created_at", "updated_at"]
+        read_only_fields = ["uid", "slug", "created_at", "updated_at"]
 
 
 # Onboarding Vendor

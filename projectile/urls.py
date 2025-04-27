@@ -28,6 +28,7 @@ from drf_spectacular.views import (
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    # Public APIs
     path("api/v1/auth", include("accountio.rest.urls.auth")),
     path("api/v1/onboarding", include("accountio.rest.urls.onboarding")),
     path("api/v1/products", include("productio.rest.urls")),
@@ -40,5 +41,9 @@ urlpatterns = [
         SpectacularRedocView.as_view(url_name="schema"),
         name="redoc",
     ),
+    # django rest session auth
+    path("api-auth/", include("rest_framework.urls")),
+    # Private APIs for vendors
+    path("api/v1/we", include("vendorapi.rest.urls")),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
