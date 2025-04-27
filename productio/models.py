@@ -4,6 +4,8 @@ from django.db import models
 
 from accountio.models import Vendor
 
+from productio.managers import CustomProductManager
+
 from shared.base_model import BaseModel
 
 
@@ -17,3 +19,5 @@ class Product(BaseModel):
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
     total_quantity = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
+
+    objects = CustomProductManager()

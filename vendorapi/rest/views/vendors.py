@@ -11,13 +11,23 @@ from django.db.models import (
 )
 from rest_framework.exceptions import NotFound
 
-from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import (
+    ListAPIView,
+    RetrieveUpdateDestroyAPIView,
+    ListCreateAPIView,
+)
 
 from rest_framework.permissions import IsAuthenticated
 
 from accountio.models import Vendor, VendorUser
 
-from vendorapi.rest.serializers.vendors import PrivateVendorListSerializer
+from productio.models import Product
+
+from vendorapi.rest.serializers.vendors import (
+    PrivateVendorListSerializer,
+    PrivateVendorProductListSerializer,
+    PrivateVendorProductDetailsSerializer,
+)
 
 
 class PrivateVendorListView(ListAPIView):
@@ -44,7 +54,7 @@ class PrivateVendorListView(ListAPIView):
         )
 
         return (
-            Vendor.objects.filter(id__in=connected_vendor_ids, is_active=True)
+            Vendor.objects.filter(id__in=connected_vendor_ids)
             .annotate(
                 role=Subquery(role_subquery.values("role"), output_field=CharField()),
                 last_login=Subquery(
@@ -67,14 +77,41 @@ class PrivateVendorDetailsView(RetrieveUpdateDestroyAPIView):
         user = self.request.user
 
         try:
-            vendor = Vendor.objects.get(uid=vendor_uid, is_active=True)
+            vendor = Vendor.objects.get(uid=vendor_uid)
             vendor_user = VendorUser.objects.filter(vendor=vendor, user=user).first()
             if vendor_user:
                 vendor_user.last_login = timezone.now()
                 vendor_user.save_dirty_fields()
             return vendor
         except Vendor.DoesNotExist:
-            raise NotFound(detail="Vendor not found")
+            raise NotFound(detail="Vendor not found!")
+
+    def perform_destroy(self, instance):
+        instance.is_active = False
+        instance.save_dirty_fields()
+
+
+class PrivateVendorProductListView(ListCreateAPIView):
+    serializer_class = PrivateVendorProductListSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        vendor_uid = self.kwargs["vendor_uid"]
+        return Product.objects.filter(vendor__uid=vendor_uid)
+
+
+class PrivateVendorProductDetailsView(RetrieveUpdateDestroyAPIView):
+    serializer_class = PrivateVendorProductDetailsSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        vendor_uid = self.kwargs["vendor_uid"]
+        product_uid = self.kwargs["product_uid"]
+
+        try:
+            return Product.objects.get(uid=product_uid, vendor__uid=vendor_uid)
+        except Product.DoesNotExist:
+            raise NotFound(detail="Product not found!")
 
     def perform_destroy(self, instance):
         instance.is_active = False

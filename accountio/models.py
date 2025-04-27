@@ -5,6 +5,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 
 from accountio.choices import VendorUserRole
+from accountio.managers import CustomVendorManager
 
 from shared.base_model import BaseModel
 
@@ -22,6 +23,8 @@ class Vendor(BaseModel):
     contact_number = PhoneNumberField(blank=True, null=True)
     website_url = models.URLField(blank=True)
     address = models.CharField(blank=True, null=True, max_length=255)
+
+    objects = CustomVendorManager()
 
 
 class VendorUser(BaseModel):
