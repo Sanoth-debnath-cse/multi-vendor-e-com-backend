@@ -32,6 +32,8 @@ from vendorapi.rest.serializers.vendors import (
     PrivateOrderListSerializer,
 )
 
+from shared.permissions.vendors import IsVendor
+
 
 class PrivateVendorListView(ListAPIView):
     serializer_class = PrivateVendorListSerializer
@@ -73,7 +75,7 @@ class PrivateVendorListView(ListAPIView):
 
 class PrivateVendorDetailsView(RetrieveUpdateDestroyAPIView):
     serializer_class = PrivateVendorListSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsVendor]
 
     def get_object(self):
         vendor_uid = self.kwargs["vendor_uid"]
@@ -96,7 +98,7 @@ class PrivateVendorDetailsView(RetrieveUpdateDestroyAPIView):
 
 class PrivateVendorProductListView(ListCreateAPIView):
     serializer_class = PrivateVendorProductListSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsVendor]
 
     def get_queryset(self):
         vendor_uid = self.kwargs["vendor_uid"]
