@@ -15,11 +15,13 @@ from rest_framework.generics import (
     ListAPIView,
     RetrieveUpdateDestroyAPIView,
     ListCreateAPIView,
+    RetrieveUpdateAPIView,
 )
 
 from rest_framework.permissions import IsAuthenticated
 
 from accountio.models import Vendor, VendorUser
+from orderio.models import Order, OrderItems
 
 from productio.models import Product
 
@@ -27,6 +29,7 @@ from vendorapi.rest.serializers.vendors import (
     PrivateVendorListSerializer,
     PrivateVendorProductListSerializer,
     PrivateVendorProductDetailsSerializer,
+    PrivateOrderListSerializer,
 )
 
 
@@ -116,3 +119,42 @@ class PrivateVendorProductDetailsView(RetrieveUpdateDestroyAPIView):
     def perform_destroy(self, instance):
         instance.is_active = False
         instance.save_dirty_fields()
+
+
+class PrivateOrderListView(ListAPIView):
+    serializer_class = PrivateOrderListSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        vendor_uid = self.kwargs["vendor_uid"]
+        try:
+            vendor = Vendor.objects.get(uid=vendor_uid)
+        except Vendor.DoesNotExist:
+            raise NotFound(detail="Vendor not found!")
+
+        orders_ids = (
+            OrderItems.objects.filter(product__vendor=vendor)
+            .values_list("order_id", flat=True)
+            .distinct()
+        )
+
+        return (
+            Order.objects.prefetch_related("products", "products__vendor")
+            .filter(id__in=orders_ids)
+            .order_by("-created_at")
+        )
+
+
+class PrivateOrderDetailsView(RetrieveUpdateAPIView):
+    serializer_class = PrivateOrderListSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        order_uid = self.kwargs["order_uid"]
+
+        try:
+            return Order.objects.prefetch_related("products", "products__vendor").get(
+                uid=order_uid
+            )
+        except Order.DoesNotExist:
+            raise NotFound(detail="Order not found!")

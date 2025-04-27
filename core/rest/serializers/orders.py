@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.utils import timezone
 
 from rest_framework import serializers
 
@@ -14,7 +15,6 @@ class UserProductItemsSerializer(serializers.Serializer):
         queryset=Product.objects.all(),
         slug_field="uid",
         write_only=True,
-        many=True,
         required=True,
     )
     quantity = serializers.IntegerField(default=1)
@@ -36,8 +36,17 @@ class UserOrderListSerializer(serializers.ModelSerializer):
             "address",
             "products",
             "selected_products",
+            "status",
+            "total_price",
         ]
-        read_only_fields = ["uid", "created_at", "updated_at", "order_id"]
+        read_only_fields = [
+            "uid",
+            "created_at",
+            "updated_at",
+            "order_id",
+            "status",
+            "total_price",
+        ]
 
     @transaction.atomic
     def create(self, validated_data):
@@ -62,6 +71,7 @@ class UserOrderListSerializer(serializers.ModelSerializer):
                 quantity=product.get("quantity"),
                 total_product_price=product.get("product_uids").unit_price
                 * product.get("quantity"),
+                updated_at=timezone.now(),
             )
             order_items.append(item)
             total_price += product.get("product_uids").unit_price * product.get(

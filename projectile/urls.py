@@ -43,7 +43,11 @@ urlpatterns = [
     ),
     # django rest session auth
     path("api-auth/", include("rest_framework.urls")),
+    # Authenticate APIs for users
+    path("api/v1/me", include("core.rest.urls")),
     # Private APIs for vendors
     path("api/v1/we", include("vendorapi.rest.urls")),
+    # Admin APIs
+    path("api/v1/admin", include("adminio.rest.urls")),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "accountio.apps.AccountioConfig",
     "productio.apps.ProductioConfig",
     "orderio.apps.OrderioConfig",
+    "adminio.apps.AdminioConfig",
 ]
 
 AUTH_USER_MODEL = "core.User"
