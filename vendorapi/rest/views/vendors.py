@@ -107,7 +107,7 @@ class PrivateVendorProductListView(ListCreateAPIView):
 
 class PrivateVendorProductDetailsView(RetrieveUpdateDestroyAPIView):
     serializer_class = PrivateVendorProductDetailsSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsVendor]
 
     def get_object(self):
         vendor_uid = self.kwargs["vendor_uid"]
@@ -125,7 +125,7 @@ class PrivateVendorProductDetailsView(RetrieveUpdateDestroyAPIView):
 
 class PrivateOrderListView(ListAPIView):
     serializer_class = PrivateOrderListSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsVendor]
 
     def get_queryset(self):
         vendor_uid = self.kwargs["vendor_uid"]
@@ -149,7 +149,7 @@ class PrivateOrderListView(ListAPIView):
 
 class PrivateOrderDetailsView(RetrieveUpdateAPIView):
     serializer_class = PrivateOrderListSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsVendor]
 
     def get_object(self):
         order_uid = self.kwargs["order_uid"]
